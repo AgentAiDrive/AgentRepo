@@ -2,7 +2,6 @@ import os, uuid, json, asyncio
 import streamlit as st
 from pydantic import BaseModel, Field
 import openai
-import openai.beta.agents as oa_agents
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 PERSONAS_FILE = "personas.json"
