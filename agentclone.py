@@ -3,7 +3,7 @@ import streamlit as st
 from pydantic import BaseModel, Field
 import openai
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = st.secrets["openai"]["api_key"]  
 PERSONAS_FILE = "personas.json"
 
 class Persona(BaseModel):
