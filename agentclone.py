@@ -57,7 +57,7 @@ nav_cols = st.columns(len(pages))
 for i, label in enumerate(pages):
     if nav_cols[i].button(label):
         st.session_state.page = label
-        st.experimental_rerun()
+        st.rerun()
 
 if st.session_state.page == "Home":
     st.title("Agent Clone Wizard")
@@ -74,7 +74,7 @@ elif st.session_state.page == "Agents":
             if st.button("Delete", key=p.id):
                 personas = [x for x in personas if x.id != p.id]
                 save_personas(personas)
-                st.experimental_rerun()
+                st.rerun()
 
 elif st.session_state.page == "Create Agent":
     st.title("Create New Agent Persona")
@@ -105,7 +105,7 @@ elif st.session_state.page == "Create Agent":
                 st.session_state.short_desc = st.text_input("Edit description", st.session_state.generated_desc)
             if col3.button("Retry"):
                 st.session_state.pop("generated_desc")
-                st.experimental_rerun()
+                st.rerun()
 
     if st.session_state.get("short_desc"):
         with st.form("step2"):
