@@ -27,7 +27,7 @@ def save_personas(personas):
         json.dump([p.dict() for p in personas], f, indent=2)
 
 async def generate_short_desc(agent_type, source_type, source):
-    resp = openai.ChatCompletion.create(
+    resp = openai.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role":"system","content":"You generate concise agent persona descriptions."},
