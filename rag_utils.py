@@ -10,8 +10,8 @@ def ingest_files(uploaded_files):
         docs.append(text)
     embeds = OpenAIEmbeddings()
     store = Chroma.from_texts(
-        texts=docs,
-        embedding_function=embeds,
+        texts=docs,  
+        embedding_function=embeds,  
         persist_directory=VECTORSTORE_DIR
     )
     return store
