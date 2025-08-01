@@ -6,6 +6,9 @@ from app_utils import load_sources, save_sources, load_profiles, save_profiles
 from rag_utils import ingest_files, load_retriever
 from memory import get_history_path, load_history, save_history
 from functions import function_definitions, retrieve_documents
+import pysqlite3
+import sys
+sys.modules['sqlite3'] = pysqlite3
 
 st.set_page_config(page_title="My Parent Helpers", layout="centered")
 openai.api_key = os.getenv("OPENAI_API_KEY", st.secrets.get("OPENAI_API_KEY", ""))
