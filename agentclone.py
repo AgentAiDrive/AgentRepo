@@ -146,39 +146,39 @@ with tab4:
     user_input = st.text_input("Type your parenting question or scenario:", key="chat_input")
     use_rag = st.checkbox("Retrieve from uploaded docs", value=False)
     if st.button("Send") and user_input:
-    rag_docs = None
-    if use_rag:
-        docs = retrieve_documents(user_input)
-        if docs:
-            rag_docs = "\n\n".join(docs[:2])  # show top 2 docs
-
-    messages = assemble_messages(active_prof, user_input, rag_docs, prev_turns)
-    response = openai.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        functions=function_definitions,
-        function_call="auto",
-        temperature=0.8
-    )
-    msg = response.choices[0].message
-
-    # Use attribute access, NOT .get()
-    if hasattr(msg, "function_call") and msg.function_call:
-        call = msg.function_call
-        if call.name == "retrieve_documents":
-            args = json.loads(call.arguments)
-            docs = retrieve_documents(args["query"])
-            messages.append({"role": "system", "content": f"Retrieved Docs:\n{docs}"})
-            response = openai.chat.completions.create(
-                model="gpt-4o",
-                messages=messages,
-                temperature=0.8
-            )
-            bot_msg = response.choices[0].message.content
+        rag_docs = None
+        if use_rag:
+            docs = retrieve_documents(user_input)
+            if docs:
+                rag_docs = "\n\n".join(docs[:2])  # show top 2 docs
+    
+        messages = assemble_messages(active_prof, user_input, rag_docs, prev_turns)
+        response = openai.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            functions=function_definitions,
+            function_call="auto",
+            temperature=0.8
+        )
+        msg = response.choices[0].message
+    
+        # Use attribute access, NOT .get()
+        if hasattr(msg, "function_call") and msg.function_call:
+            call = msg.function_call
+            if call.name == "retrieve_documents":
+                args = json.loads(call.arguments)
+                docs = retrieve_documents(args["query"])
+                messages.append({"role": "system", "content": f"Retrieved Docs:\n{docs}"})
+                response = openai.chat.completions.create(
+                    model="gpt-4o",
+                    messages=messages,
+                    temperature=0.8
+                )
+                bot_msg = response.choices[0].message.content
+            else:
+                bot_msg = "Function call not handled."
         else:
-            bot_msg = "Function call not handled."
-    else:
-        bot_msg = msg.content
+            bot_msg = msg.content
 
     prev_turns = prev_turns or []
     prev_turns.append((user_input, bot_msg))
