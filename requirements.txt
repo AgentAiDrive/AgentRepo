@@ -1,9 +1,7 @@
 streamlit
 openai
 pydantic
-json
 langchain
 faiss-cpu
 PyPDF2
 tiktoken
-time
