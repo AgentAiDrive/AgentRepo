@@ -2,6 +2,7 @@ streamlit
 openai
 pydantic
 langchain
-faiss-cpu
+langchain-openai
+chromadb
 PyPDF2
 tiktoken
