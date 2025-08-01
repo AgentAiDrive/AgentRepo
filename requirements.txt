@@ -1,4 +1,9 @@
 streamlit
 openai
 pydantic
-openai_agents
+json
+langchain
+faiss-cpu
+PyPDF2
+tiktoken
+time
