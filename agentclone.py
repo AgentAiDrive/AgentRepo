@@ -145,13 +145,14 @@ with tab4:
     # User input
     user_input = st.text_input("Type your parenting question or scenario:", key="chat_input")
     use_rag = st.checkbox("Retrieve from uploaded docs", value=False)
+    
     if st.button("Send") and user_input:
         rag_docs = None
         if use_rag:
             docs = retrieve_documents(user_input)
             if docs:
                 rag_docs = "\n\n".join(docs[:2])  # show top 2 docs
-    
+
         messages = assemble_messages(active_prof, user_input, rag_docs, prev_turns)
         response = openai.chat.completions.create(
             model="gpt-4o",
@@ -161,8 +162,8 @@ with tab4:
             temperature=0.8
         )
         msg = response.choices[0].message
-    
-        # Use attribute access, NOT .get()
+
+        bot_msg = ""  # Ensure variable is always defined!
         if hasattr(msg, "function_call") and msg.function_call:
             call = msg.function_call
             if call.name == "retrieve_documents":
@@ -180,21 +181,22 @@ with tab4:
         else:
             bot_msg = msg.content
 
-    prev_turns = prev_turns or []
-    prev_turns.append((user_input, bot_msg))
-    save_history(active_prof["name"], prev_turns, hist_path)
-    st.markdown(f"**You:** {user_input}")
-    st.markdown(f"**{active_prof['name']}:** {bot_msg}")
+        prev_turns = prev_turns or []
+        prev_turns.append((user_input, bot_msg))
+        save_history(active_prof["name"], prev_turns, hist_path)
+        st.markdown(f"**You:** {user_input}")
+        st.markdown(f"**{active_prof['name']}:** {bot_msg}")
 
-# Show full chat history
-st.markdown("---")
-st.markdown("#### Conversation History")
-for u, b in (prev_turns or []):
-    st.markdown(
-        f"<div style='background:#f4fff4;padding:8px;border-radius:8px;margin-bottom:4px'>"
-        f"<b>You:</b> {u}<br><b>{active_prof['name']}:</b> {b}</div>",
-        unsafe_allow_html=True
-    )
+    # Show full chat history
+    st.markdown("---")
+    st.markdown("#### Conversation History")
+    for u, b in (prev_turns or []):
+        st.markdown(
+            f"<div style='background:#f4fff4;padding:8px;border-radius:8px;margin-bottom:4px'>"
+            f"<b>You:</b> {u}<br><b>{active_prof['name']}:</b> {b}</div>",
+            unsafe_allow_html=True
+        )
+
 
 # ---- HISTORY TAB ----
 with tab5:
