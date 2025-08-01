@@ -155,7 +155,7 @@ with tab4:
         # Assemble messages
         messages = assemble_messages(active_prof, user_input, rag_docs, prev_turns)
         # Function calling setup
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model="gpt-4o",
             messages=messages,
             functions=function_definitions,
@@ -170,7 +170,7 @@ with tab4:
                 args = json.loads(call.arguments)
                 docs = retrieve_documents(args["query"])
                 messages.append({"role": "system", "content": f"Retrieved Docs:\n{docs}"})
-                response = openai.ChatCompletion.create(
+                response = openai.chat.completions.create(
                     model="gpt-4o",
                     messages=messages,
                     temperature=0.8
