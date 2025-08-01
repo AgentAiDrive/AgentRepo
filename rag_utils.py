@@ -1,19 +1,17 @@
-import os
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma  # use Chroma for full compatibility
 
-VECTORSTORE_DIR = "vectorstore"
+VECTORSTORE_DIR = "chromastore"
 
 def ingest_files(uploaded_files):
     docs = []
     for f in uploaded_files:
         text = f.read().decode("utf-8", errors="ignore")
-        docs.extend(RecursiveCharacterTextSplitter(chunk_size=1000).split_text(text))
+        docs.append(text)
     embeds = OpenAIEmbeddings()
-    store = FAISS.from_texts(docs, embedder=embeds)
-    store.save_local(VECTORSTORE_DIR)
+    store = Chroma.from_texts(docs, embedding=embeds, persist_directory=VECTORSTORE_DIR)
+    store.persist()
     return store
 
 def load_retriever():
-    return FAISS.load_local(VECTORSTORE_DIR, OpenAIEmbeddings()).as_retriever()
+    return Chroma(persist_directory=VECTORSTORE_DIR, embedding_function=OpenAIEmbeddings()).as_retriever()
